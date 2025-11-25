@@ -1,0 +1,120 @@
+@model PawHelp.Models.Animal
+
+@{
+    ViewData["Title"] = "Chi tiết động vật";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+    <a href="@Url.Action("Animals")" class="btn btn-secondary">← Quay lại</a>
+    <a href="@Url.Action("EditAnimal", new { id = Model.Id })" class="btn btn-warning">✏️ Chỉnh sửa</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-custom">
+            <div class="card-body text-center">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded mb-3" style="max-height: 300px;" />
+                }
+                else
+                {
+                    <div class="bg-light rounded p-5 mb-3">
+                        <span style="font-size: 80px;">🐾</span>
+                    </div>
+                }
+                <h3>@Model.Name</h3>
+                <p class="text-muted">@Model.Species @(Model.Breed != null ? $"- {Model.Breed}" : "")</p>
+                @{
+                    var badgeClass = Model.Status switch
+                    {
+                        "Đang cứu hộ" => "bg-warning text-dark",
+                        "Đã điều trị" => "bg-info",
+                        "Sẵn sàng nhận nuôi" => "bg-success",
+                        "Đã được nhận nuôi" => "bg-secondary",
+                        _ => "bg-secondary"
+                    };
+                }
+                <span class="badge @badgeClass fs-6">@Model.Status</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">📋 Thông tin cơ bản</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Mã số:</strong></div>
+                    <div class="col-md-8">#@Model.Id</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Tên:</strong></div>
+                    <div class="col-md-8">@Model.Name</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Loài:</strong></div>
+                    <div class="col-md-8">@Model.Species</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Giống:</strong></div>
+                    <div class="col-md-8">@(Model.Breed ?? "Không rõ")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Tuổi:</strong></div>
+                    <div class="col-md-8">@(Model.Age != null ? $"{Model.Age} tháng" : "Không rõ")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Giới tính:</strong></div>
+                    <div class="col-md-8">@Model.Gender</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Ngày cứu hộ:</strong></div>
+                    <div class="col-md-8">@Model.RescueDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Địa điểm:</strong></div>
+                    <div class="col-md-8">@(Model.Location ?? "Không rõ")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">🏥 Thông tin sức khỏe</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Tình trạng:</strong></div>
+                    <div class="col-md-8">
+                        @if (Model.IsHealthy)
+                        {
+                            <span class="badge bg-success">✓ Khỏe mạnh</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">⚠ Cần theo dõi</span>
+                        }
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Ghi chú y tế:</strong></div>
+                    <div class="col-md-8">@(Model.MedicalNotes ?? "Không có ghi chú")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header">
+                <h5 class="mb-0">📝 Mô tả</h5>
+            </div>
+            <div class="card-body">
+                <p>@(Model.Description ?? "Không có mô tả")</p>
+            </div>
+        </div>
+    </div>
+</div>
+

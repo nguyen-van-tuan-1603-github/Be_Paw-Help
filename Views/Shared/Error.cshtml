@@ -1,0 +1,99 @@
+﻿@model PawHelp.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Lỗi";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PawHelp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .error-container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            color: #e74c3c;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h1 class="error-title">Đã xảy ra lỗi!</h1>
+        
+        @if (Model?.StatusCode != null)
+        {
+            <p class="error-message">Mã lỗi: @Model.StatusCode</p>
+        }
+
+        @if (!string.IsNullOrEmpty(Model?.ErrorMessage))
+        {
+            <p class="error-message">@Model.ErrorMessage</p>
+        }
+        else
+        {
+            <p class="error-message">
+                Xin lỗi, đã có lỗi xảy ra trong quá trình xử lý yêu cầu của bạn.
+            </p>
+        }
+
+        @if (Model?.ShowRequestId ?? false)
+        {
+            <p class="text-muted">
+                <small>Request ID: <code>@Model.RequestId</code></small>
+            </p>
+        }
+
+        <a href="/" class="btn-home">🏠 Về trang chủ</a>
+    </div>
+</body>
+</html>

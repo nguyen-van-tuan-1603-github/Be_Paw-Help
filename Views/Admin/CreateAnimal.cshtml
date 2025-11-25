@@ -1,0 +1,115 @@
+@model PawHelp.Models.Animal
+
+@{
+    ViewData["Title"] = "Thêm động vật mới";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+    <a href="@Url.Action("Animals")" class="btn btn-secondary">← Quay lại</a>
+</div>
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h4 class="mb-0">Thêm động vật mới</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="CreateAnimal" method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label">Tên động vật <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="form-control" placeholder="VD: Bobby" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Species" class="form-label">Loài <span class="text-danger">*</span></label>
+                    <select asp-for="Species" class="form-select">
+                        <option value="">-- Chọn loài --</option>
+                        <option value="Chó">Chó</option>
+                        <option value="Mèo">Mèo</option>
+                        <option value="Chim">Chim</option>
+                        <option value="Thỏ">Thỏ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                    <span asp-validation-for="Species" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Breed" class="form-label">Giống</label>
+                    <input asp-for="Breed" class="form-control" placeholder="VD: Golden Retriever" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label asp-for="Age" class="form-label">Tuổi (tháng)</label>
+                    <input asp-for="Age" type="number" class="form-control" placeholder="VD: 12" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label asp-for="Gender" class="form-label">Giới tính <span class="text-danger">*</span></label>
+                    <select asp-for="Gender" class="form-select">
+                        <option value="">-- Chọn --</option>
+                        <option value="Đực">Đực</option>
+                        <option value="Cái">Cái</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Status" class="form-label">Trạng thái <span class="text-danger">*</span></label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="Đang cứu hộ">Đang cứu hộ</option>
+                        <option value="Đã điều trị">Đã điều trị</option>
+                        <option value="Sẵn sàng nhận nuôi">Sẵn sàng nhận nuôi</option>
+                        <option value="Đã được nhận nuôi">Đã được nhận nuôi</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="RescueDate" class="form-label">Ngày cứu hộ</label>
+                    <input asp-for="RescueDate" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Location" class="form-label">Địa điểm tìm thấy</label>
+                <input asp-for="Location" class="form-control" placeholder="VD: Quận 1, TP.HCM" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="3" 
+                          placeholder="Mô tả về tình trạng, đặc điểm của động vật..."></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ImageUrl" class="form-label">URL hình ảnh</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsHealthy" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsHealthy" class="form-check-label">Tình trạng sức khỏe tốt</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MedicalNotes" class="form-label">Ghi chú y tế</label>
+                <textarea asp-for="MedicalNotes" class="form-control" rows="2" 
+                          placeholder="Các vấn đề sức khỏe, đã tiêm phòng, điều trị..."></textarea>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                <a href="@Url.Action("Animals")" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

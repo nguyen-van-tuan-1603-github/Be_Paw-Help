@@ -1,0 +1,85 @@
+@model IEnumerable<PawHelp.Models.RescueRequest>
+
+@{
+    ViewData["Title"] = "Yêu cầu cứu hộ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Danh sách yêu cầu cứu hộ</h2>
+</div>
+
+<div class="card card-custom">
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Người báo cáo</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa điểm</th>
+                            <th>Loại động vật</th>
+                            <th>Độ ưu tiên</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày báo cáo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model)
+                        {
+                            <tr>
+                                <td>@request.Id</td>
+                                <td><strong>@request.ReporterName</strong></td>
+                                <td>@request.PhoneNumber</td>
+                                <td>@request.Location</td>
+                                <td>@(request.AnimalType ?? "N/A")</td>
+                                <td>
+                                    @{
+                                        var priorityClass = request.Priority switch
+                                        {
+                                            "Khẩn cấp" => "bg-danger",
+                                            "Cao" => "bg-warning text-dark",
+                                            "Trung bình" => "bg-info",
+                                            "Thấp" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @priorityClass">@request.Priority</span>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusClass = request.Status switch
+                                        {
+                                            "Chờ xử lý" => "bg-warning text-dark",
+                                            "Đang xử lý" => "bg-info",
+                                            "Hoàn thành" => "bg-success",
+                                            "Hủy bỏ" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @statusClass">@request.Status</span>
+                                </td>
+                                <td>@request.RequestDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <a href="@Url.Action("RequestDetails", new { id = request.Id })" 
+                                       class="btn btn-sm btn-info" title="Chi tiết">👁️ Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <p class="text-muted">Chưa có yêu cầu cứu hộ nào</p>
+            </div>
+        }
+    </div>
+</div>
+

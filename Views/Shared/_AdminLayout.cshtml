@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PawHelp Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, #34495e 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-sidebar .brand {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .admin-sidebar .brand h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .admin-sidebar .brand small {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        .admin-nav {
+            padding: 20px 0;
+        }
+
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .admin-nav a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: var(--secondary-color);
+        }
+
+        .admin-nav a.active {
+            background-color: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .admin-nav a span {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .admin-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .admin-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-main {
+            padding: 30px;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .stats-card .icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .stats-card h3 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stats-card p {
+            margin: 5px 0 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card-custom .card-header {
+            background: white;
+            border-bottom: 2px solid #f4f6f9;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .table {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="brand">
+                <h3>🐾 PawHelp</h3>
+                <small>Hệ thống quản lý cứu hộ</small>
+            </div>
+            <nav class="admin-nav">
+                <a href="@Url.Action("Index", "Admin")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="@Url.Action("Animals", "Admin")" class="@(ViewContext.RouteData.Values["action"]?.ToString()?.Contains("Animal") == true ? "active" : "")">
+                    <span>🐕</span> Quản lý động vật
+                </a>
+                <a href="@Url.Action("RescueRequests", "Admin")" class="@(ViewContext.RouteData.Values["action"]?.ToString()?.Contains("Request") == true ? "active" : "")">
+                    <span>🚨</span> Yêu cầu cứu hộ
+                </a>
+                <a href="@Url.Action("Users", "Admin")" class="@(ViewContext.RouteData.Values["action"]?.ToString()?.Contains("User") == true ? "active" : "")">
+                    <span>👥</span> Quản lý người dùng
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <header class="admin-header">
+                <h1>@ViewData["Title"]</h1>
+                <div class="user-info">
+                    @{
+                        var username = Context.Session.GetString("Username") ?? "Admin";
+                    }
+                    <span>Xin chào, <strong>@username</strong></span>
+                    <a href="@Url.Action("Logout", "Auth")" class="btn btn-sm btn-outline-danger ms-2">
+                        🚪 Đăng xuất
+                    </a>
+                </div>
+            </header>
+
+            <main class="admin-main">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

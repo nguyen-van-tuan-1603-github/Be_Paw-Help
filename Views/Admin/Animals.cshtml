@@ -1,0 +1,100 @@
+@model IEnumerable<PawHelp.Models.Animal>
+
+@{
+    ViewData["Title"] = "Quản lý động vật";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Danh sách động vật</h2>
+    <a href="@Url.Action("CreateAnimal")" class="btn btn-primary">
+        <span>➕</span> Thêm động vật mới
+    </a>
+</div>
+
+<div class="card card-custom">
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Loài</th>
+                            <th>Giống</th>
+                            <th>Tuổi</th>
+                            <th>Giới tính</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày cứu hộ</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var animal in Model)
+                        {
+                            <tr>
+                                <td>@animal.Id</td>
+                                <td><strong>@animal.Name</strong></td>
+                                <td>@animal.Species</td>
+                                <td>@(animal.Breed ?? "N/A")</td>
+                                <td>@(animal.Age != null ? $"{animal.Age} tháng" : "N/A")</td>
+                                <td>@animal.Gender</td>
+                                <td>
+                                    @{
+                                        var badgeClass = animal.Status switch
+                                        {
+                                            "Đang cứu hộ" => "bg-warning text-dark",
+                                            "Đã điều trị" => "bg-info",
+                                            "Sẵn sàng nhận nuôi" => "bg-success",
+                                            "Đã được nhận nuôi" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@animal.Status</span>
+                                </td>
+                                <td>@animal.RescueDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="@Url.Action("AnimalDetails", new { id = animal.Id })" 
+                                           class="btn btn-info" title="Chi tiết">👁️</a>
+                                        <a href="@Url.Action("EditAnimal", new { id = animal.Id })" 
+                                           class="btn btn-warning" title="Sửa">✏️</a>
+                                        <button type="button" class="btn btn-danger" 
+                                                onclick="deleteAnimal(@animal.Id)" title="Xóa">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <p class="text-muted">Chưa có động vật nào trong hệ thống</p>
+                <a href="@Url.Action("CreateAnimal")" class="btn btn-primary">Thêm động vật đầu tiên</a>
+            </div>
+        }
+    </div>
+</div>
+
+<form id="deleteForm" method="post" style="display: none;">
+    <input type="hidden" name="id" id="deleteId" />
+</form>
+
+@section Scripts {
+    <script>
+        function deleteAnimal(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa động vật này?')) {
+                const form = document.getElementById('deleteForm');
+                form.action = '@Url.Action("DeleteAnimal")';
+                document.getElementById('deleteId').value = id;
+                form.submit();
+            }
+        }
+    </script>
+}
+

@@ -1,0 +1,121 @@
+@model PawHelp.Models.User
+
+@{
+    ViewData["Title"] = "Chi tiết người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+    <a href="@Url.Action("Users")" class="btn btn-secondary">← Quay lại</a>
+    <a href="@Url.Action("EditUser", new { id = Model.Id })" class="btn btn-warning">✏️ Chỉnh sửa</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-custom">
+            <div class="card-body text-center">
+                @if (!string.IsNullOrEmpty(Model.Avatar))
+                {
+                    <img src="@Model.Avatar" alt="@Model.FullName" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
+                }
+                else
+                {
+                    <div class="bg-light rounded-circle mx-auto mb-3" style="width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 60px;">👤</span>
+                    </div>
+                }
+                <h3>@Model.FullName</h3>
+                <p class="text-muted">@@@Model.Username</p>
+                @{
+                    var roleClass = Model.Role switch
+                    {
+                        "Admin" => "bg-danger",
+                        "Staff" => "bg-primary",
+                        "Volunteer" => "bg-info",
+                        _ => "bg-secondary"
+                    };
+                }
+                <span class="badge @roleClass fs-6 mb-2">@Model.Role</span>
+                <br />
+                @if (Model.IsActive)
+                {
+                    <span class="badge bg-success">✓ Đang hoạt động</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">✗ Vô hiệu hóa</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">📋 Thông tin cá nhân</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>ID:</strong></div>
+                    <div class="col-md-8">#@Model.Id</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Tên đăng nhập:</strong></div>
+                    <div class="col-md-8">@Model.Username</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Họ tên:</strong></div>
+                    <div class="col-md-8">@Model.FullName</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Email:</strong></div>
+                    <div class="col-md-8">@Model.Email</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Số điện thoại:</strong></div>
+                    <div class="col-md-8">@(Model.PhoneNumber ?? "Chưa cập nhật")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Vai trò:</strong></div>
+                    <div class="col-md-8">
+                        <span class="badge @roleClass">@Model.Role</span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Ngày tạo tài khoản:</strong></div>
+                    <div class="col-md-8">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                @if (Model.LastLogin != null)
+                {
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Đăng nhập lần cuối:</strong></div>
+                        <div class="col-md-8">@Model.LastLogin?.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header">
+                <h5 class="mb-0">📊 Thống kê hoạt động</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h4 class="text-primary">0</h4>
+                        <p class="text-muted">Nhiệm vụ đã hoàn thành</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-warning">0</h4>
+                        <p class="text-muted">Nhiệm vụ đang xử lý</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-success">0</h4>
+                        <p class="text-muted">Động vật đã cứu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

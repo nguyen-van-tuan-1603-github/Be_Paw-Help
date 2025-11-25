@@ -1,0 +1,153 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left: 4px solid #3498db;">
+            <div class="icon" style="color: #3498db;">🐾</div>
+            <h3>@ViewBag.TotalAnimals</h3>
+            <p>Tổng số động vật</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left: 4px solid #f39c12;">
+            <div class="icon" style="color: #f39c12;">🏥</div>
+            <h3>@ViewBag.AnimalsInRescue</h3>
+            <p>Đang cứu hộ</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left: 4px solid #27ae60;">
+            <div class="icon" style="color: #27ae60;">❤️</div>
+            <h3>@ViewBag.AnimalsReadyForAdoption</h3>
+            <p>Sẵn sàng nhận nuôi</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left: 4px solid #e74c3c;">
+            <div class="icon" style="color: #e74c3c;">🚨</div>
+            <h3>@ViewBag.PendingRequests</h3>
+            <p>Yêu cầu chờ xử lý</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card card-custom">
+            <div class="card-header">
+                <h5 class="mb-0">📋 Yêu cầu cứu hộ gần đây</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentRequests != null && ViewBag.RecentRequests.Count > 0)
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var request in ViewBag.RecentRequests)
+                        {
+                            <a href="@Url.Action("RequestDetails", "Admin", new { id = request.Id })" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@request.ReporterName</h6>
+                                        <small class="text-muted">@request.Location</small>
+                                    </div>
+                                    <div>
+                                        @{
+                                            var badgeClass = request.Status switch
+                                            {
+                                                "Chờ xử lý" => "bg-warning",
+                                                "Đang xử lý" => "bg-info",
+                                                "Hoàn thành" => "bg-success",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @badgeClass">@request.Status</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted">@request.RequestDate.ToString("dd/MM/yyyy HH:mm")</small>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center my-3">Không có yêu cầu nào</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card card-custom">
+            <div class="card-header">
+                <h5 class="mb-0">🐕 Động vật mới cứu hộ</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentAnimals != null && ViewBag.RecentAnimals.Count > 0)
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var animal in ViewBag.RecentAnimals)
+                        {
+                            <a href="@Url.Action("AnimalDetails", "Admin", new { id = animal.Id })" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@animal.Name</h6>
+                                        <small class="text-muted">@animal.Species - @animal.Gender</small>
+                                    </div>
+                                    <div>
+                                        @{
+                                            var statusClass = animal.Status switch
+                                            {
+                                                "Đang cứu hộ" => "bg-warning",
+                                                "Đã điều trị" => "bg-info",
+                                                "Sẵn sàng nhận nuôi" => "bg-success",
+                                                "Đã được nhận nuôi" => "bg-secondary",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@animal.Status</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Cứu hộ: @animal.RescueDate.ToString("dd/MM/yyyy")</small>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center my-3">Không có động vật nào</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-custom">
+            <div class="card-header">
+                <h5 class="mb-0">📊 Thống kê tổng quan</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h4 class="text-primary">@ViewBag.TotalRequests</h4>
+                        <p class="text-muted">Tổng yêu cầu</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-success">@ViewBag.ActiveUsers</h4>
+                        <p class="text-muted">Người dùng hoạt động</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-info">@ViewBag.TotalAnimals</h4>
+                        <p class="text-muted">Động vật đã cứu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

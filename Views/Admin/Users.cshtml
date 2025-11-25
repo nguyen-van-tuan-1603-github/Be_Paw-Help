@@ -1,0 +1,111 @@
+@model IEnumerable<PawHelp.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Danh sách người dùng</h2>
+    <a href="@Url.Action("CreateUser")" class="btn btn-primary">
+        <span>➕</span> Thêm người dùng mới
+    </a>
+</div>
+
+<div class="card card-custom">
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Id</td>
+                                <td><strong>@user.Username</strong></td>
+                                <td>@user.FullName</td>
+                                <td>@user.Email</td>
+                                <td>@(user.PhoneNumber ?? "N/A")</td>
+                                <td>
+                                    @{
+                                        var roleClass = user.Role switch
+                                        {
+                                            "Admin" => "bg-danger",
+                                            "Staff" => "bg-primary",
+                                            "Volunteer" => "bg-info",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @roleClass">@user.Role</span>
+                                </td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">✓ Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">✗ Vô hiệu hóa</span>
+                                    }
+                                </td>
+                                <td>@user.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="@Url.Action("UserDetails", new { id = user.Id })" 
+                                           class="btn btn-info" title="Chi tiết">👁️</a>
+                                        <a href="@Url.Action("EditUser", new { id = user.Id })" 
+                                           class="btn btn-warning" title="Sửa">✏️</a>
+                                        <button type="button" class="btn @(user.IsActive ? "btn-secondary" : "btn-success")" 
+                                                onclick="toggleStatus(@user.Id)" 
+                                                title="@(user.IsActive ? "Vô hiệu hóa" : "Kích hoạt")">
+                                            @(user.IsActive ? "🔒" : "🔓")
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <p class="text-muted">Chưa có người dùng nào trong hệ thống</p>
+                <a href="@Url.Action("CreateUser")" class="btn btn-primary">Thêm người dùng đầu tiên</a>
+            </div>
+        }
+    </div>
+</div>
+
+<form id="toggleForm" method="post" style="display: none;">
+    <input type="hidden" name="id" id="toggleId" />
+</form>
+
+@section Scripts {
+    <script>
+        function toggleStatus(id) {
+            if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái người dùng này?')) {
+                const form = document.getElementById('toggleForm');
+                form.action = '@Url.Action("ToggleUserStatus")';
+                document.getElementById('toggleId').value = id;
+                form.submit();
+            }
+        }
+    </script>
+}
+

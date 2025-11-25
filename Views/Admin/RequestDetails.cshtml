@@ -1,0 +1,180 @@
+@model PawHelp.Models.RescueRequest
+
+@{
+    ViewData["Title"] = "Chi tiết yêu cầu";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="mb-4">
+    <a href="@Url.Action("RescueRequests")" class="btn btn-secondary">← Quay lại</a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">📋 Thông tin yêu cầu</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Mã yêu cầu:</strong></div>
+                    <div class="col-md-8">#@Model.Id</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Người báo cáo:</strong></div>
+                    <div class="col-md-8">@Model.ReporterName</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Số điện thoại:</strong></div>
+                    <div class="col-md-8">@Model.PhoneNumber</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Email:</strong></div>
+                    <div class="col-md-8">@(Model.Email ?? "Không có")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Địa điểm:</strong></div>
+                    <div class="col-md-8">@Model.Location</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Loại động vật:</strong></div>
+                    <div class="col-md-8">@(Model.AnimalType ?? "Không rõ")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Ngày báo cáo:</strong></div>
+                    <div class="col-md-8">@Model.RequestDate.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                @if (Model.ResponseDate != null)
+                {
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Ngày phản hồi:</strong></div>
+                        <div class="col-md-8">@Model.ResponseDate?.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                }
+                @if (Model.CompletedDate != null)
+                {
+                    <div class="row mb-2">
+                        <div class="col-md-4"><strong>Ngày hoàn thành:</strong></div>
+                        <div class="col-md-8">@Model.CompletedDate?.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">📝 Mô tả tình huống</h5>
+            </div>
+            <div class="card-body">
+                <p>@Model.Description</p>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.AdminNotes))
+        {
+            <div class="card card-custom mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">📌 Ghi chú của Admin</h5>
+                </div>
+                <div class="card-body">
+                    <p>@Model.AdminNotes</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">⚡ Trạng thái</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Độ ưu tiên:</strong>
+                    @{
+                        var priorityClass = Model.Priority switch
+                        {
+                            "Khẩn cấp" => "bg-danger",
+                            "Cao" => "bg-warning text-dark",
+                            "Trung bình" => "bg-info",
+                            "Thấp" => "bg-secondary",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <br />
+                    <span class="badge @priorityClass fs-6 mt-1">@Model.Priority</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Trạng thái hiện tại:</strong>
+                    @{
+                        var statusClass = Model.Status switch
+                        {
+                            "Chờ xử lý" => "bg-warning text-dark",
+                            "Đang xử lý" => "bg-info",
+                            "Hoàn thành" => "bg-success",
+                            "Hủy bỏ" => "bg-secondary",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <br />
+                    <span class="badge @statusClass fs-6 mt-1">@Model.Status</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-custom mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">🔄 Cập nhật trạng thái</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateRequestStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái mới:</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Chờ xử lý" selected="@(Model.Status == "Chờ xử lý")">Chờ xử lý</option>
+                            <option value="Đang xử lý" selected="@(Model.Status == "Đang xử lý")">Đang xử lý</option>
+                            <option value="Hoàn thành" selected="@(Model.Status == "Hoàn thành")">Hoàn thành</option>
+                            <option value="Hủy bỏ" selected="@(Model.Status == "Hủy bỏ")">Hủy bỏ</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú:</label>
+                        <textarea name="adminNotes" class="form-control" rows="3">@Model.AdminNotes</textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">💾 Cập nhật</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header">
+                <h5 class="mb-0">👤 Phân công</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="AssignRequest" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Chọn nhân viên:</label>
+                        <select name="userId" class="form-select" required>
+                            <option value="">-- Chọn nhân viên --</option>
+                            @foreach (var user in ViewBag.Users)
+                            {
+                                <option value="@user.Id" selected="@(Model.AssignedToUserId == user.Id)">
+                                    @user.FullName (@user.Role)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">✅ Phân công</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
