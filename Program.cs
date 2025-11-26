@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PawHelp.Data;
+using PawHelp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,13 +33,24 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseSession();
+
+// Sử dụng middleware kiểm tra đăng nhập cho trang Admin
+app.UseAdminAuthentication();
+
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Admin}/{action=Index}/{id?}")
+    pattern: "{controller=Auth}/{action=Login}/{id?}")
+    .WithStaticAssets();
+
+// Route cho Admin (sẽ được bảo vệ bởi middleware)
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "Admin/{action=Index}/{id?}",
+    defaults: new { controller = "Admin" })
     .WithStaticAssets();
 
 
