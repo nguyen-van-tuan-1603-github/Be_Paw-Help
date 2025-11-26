@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using PawHelp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add Database Context
+builder.Services.AddDbContext<PawHelpDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add session support
 builder.Services.AddSession(options =>
