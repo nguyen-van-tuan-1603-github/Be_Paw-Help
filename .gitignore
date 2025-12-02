@@ -79,5 +79,15 @@ node_modules/
 # Others
 appsettings.local.json
 
+# Sensitive configuration files (contain connection strings, JWT keys)
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
 
+# Uploaded files
+wwwroot/uploads/
+
+# Database files
+*.mdf
+*.ldf
 
